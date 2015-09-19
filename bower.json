@@ -1,0 +1,9 @@
+{
+  "name": "MyBooks",
+  "version": "0.0.1",
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "react": "~0.13.3",
+    "react-dom": "~0.1.0"
+  }
+}
