@@ -2,9 +2,11 @@
 {-# LANGUAGE QuasiQuotes           #-}
 {-# LANGUAGE TemplateHaskell       #-}
 {-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE ViewPatterns #-}
 {-# LANGUAGE CPP #-}
 
 import Data.Text
+import Text.Julius
 import Web.Cookie
 import Yesod
 import Yesod.EmbeddedStatic
@@ -20,6 +22,8 @@ data MyBooks = MyBooks { getStatic :: EmbeddedStatic }
 
 mkYesod "MyBooks" [parseRoutes|
 / HomeR GET
+/Login LoginR GET
+/Books/#Text BooksR GET
 /redirect RedirectR GET
 /static StaticR EmbeddedStatic getStatic
 |]
@@ -27,35 +31,53 @@ mkYesod "MyBooks" [parseRoutes|
 instance Yesod MyBooks where
   addStaticContent = embedStaticContent getStatic StaticR Right
   defaultLayout contents = do
-    PageContent title headTags bodyTags <- widgetToPageContent contents
-    withUrlRenderer $ do
-      [hamlet|
+    PageContent title headTags bodyTags <- widgetToPageContent $ do
+      addScript $ StaticR js_bundle_js
+      addStylesheet $ StaticR bootstrap_css_bootstrap_css
+      contents
+    withUrlRenderer [hamlet|
         $doctype 5
         <html lang=en>
             <head>
                 <meta charset=UTF-8>
                 <title>#{title} - My Books
-                <link rel=stylesheet href=@{StaticR bootstrap_css_bootstrap_css}>
                 ^{headTags}
             <body>
                 <!--[if lt IE 10]>
                 <p .browserupgrade>You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.
                 <![endif]-->
+                <div .container>
                 ^{bodyTags}
       |]
 
-getHomeR :: Handler Html
-getHomeR = defaultLayout [whamlet|
-    <div .container>
-    <script src=@{StaticR js_bundle_js}>
+getHomeR :: Handler ()
+getHomeR = do
+  onedriveAccessToken <- lookupCookie "onedrive-access-token"
+  maybe (redirect LoginR) (\_ -> redirect (BooksR "/")) onedriveAccessToken
+
+getLoginR :: Handler Html
+getLoginR = defaultLayout $ do
+  addScript $ StaticR jquery_jquery_js
+  toWidget [julius|
+    $(function () {
+         renderComponent(React.createElement(Login, null));
+    });
+|]
+
+getBooksR :: Text -> Handler Html
+getBooksR encodedPath = defaultLayout $ do
+  addScript $ StaticR jquery_jquery_js
+  toWidget [julius|
+    $(function () {
+         renderComponent(React.createElement(Books, {encodedPath: "#{rawJS encodedPath}"}));
+    });
 |]
 
 getRedirectR :: Handler Html
 getRedirectR = defaultLayout $ do
-  [whamlet|
-    <script src=@{StaticR jquery_jquery_js}>
-    <script src=@{StaticR js_jengine_cookie_js}>|]
-  toWidgetBody [julius|
+  addScript (StaticR jquery_jquery_js)
+  addScript (StaticR js_jengine_cookie_js)
+  toWidget [julius|
     function parseQuery(str) {
         var result = {};
         var vars = str.split("&");
@@ -69,7 +91,7 @@ getRedirectR = defaultLayout $ do
     $(function () {
         var query = parseQuery(window.location.hash.substring(1));
         $cookie.set("onedrive-access-token", query.access_token);
-        window.location = "@{HomeR}#/books";
+        window.location = "@{HomeR}";
     });
   |]
 

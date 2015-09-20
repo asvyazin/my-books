@@ -2,8 +2,8 @@ import $ from "jquery";
 import $cookie from "jengine-cookie";
 import _ from "underscore";
 import React from "react";
-import { Link } from "react-router";
 import AjaxLoader from "./ajaxLoader";
+import App from "./App";
 
 function callOneDrive(accessToken, url, params) {
     const baseurl = "https://api.onedrive.com/v1.0";
@@ -16,9 +16,10 @@ function callOneDrive(accessToken, url, params) {
 let FolderChildPanel = React.createClass({
     render() {
         if (this.props.folder) {
+            const encodedPath = encodeURIComponent(this.props.path);
+            const url = "/Books/" + encodedPath;
             return (
-                <Link className="list-group-item" to="books" activeClassName=""
-                      params={{encodedPath: encodeURIComponent(this.props.path)}}>{this.props.children}</Link>
+                <a className="list-group-item" href={url} >{this.props.children}</a>
             );
         } else {
             return (
@@ -71,6 +72,7 @@ let Folder = React.createClass({
         if (!this.state.loaded) {
             loadingIndicator = <AjaxLoader/>;
         } else {
+            console.log("render");
             folderName = <h3 className="panel-title">{this.state.folder.name}</h3>;
             var childrenNodes = this.state.children.value.map(x => {
                 var childrenCount;
@@ -106,13 +108,11 @@ let Books = React.createClass({
     render() {
         var accessToken = $cookie.get("onedrive-access-token");
         var path = "/";
-        if (this.props.params.encodedPath) {
-            path = decodeURIComponent(this.props.params.encodedPath);
+        if (this.props.encodedPath) {
+            path = decodeURIComponent(this.props.encodedPath);
         }
 
-        return (
-            <Folder path={path} accessToken={accessToken}/>
-        );
+        return <App><Folder path={path} accessToken={accessToken}/></App>;
     }
 });
 
