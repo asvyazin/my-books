@@ -25,7 +25,11 @@ let webpackConfig = {
     module: {
         loaders: [{
             test: /\.jsx?$/,
-            loaders: ['babel-loader']
+            exclude: /(node_modules|bower_components)/,
+            loader: "babel",
+            query: {
+                optional: ["runtime"]
+            }
         }]
     },
 

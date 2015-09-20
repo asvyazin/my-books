@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "dependencies": {
     "bootstrap": "~3.3.5",
+    "jengine-cookie": "*",
     "react": "~0.13.3",
-    "react-dom": "~0.1.0"
+    "react-dom": "~0.1.0",
+    "react-router": "~0.13.3"
   }
 }
