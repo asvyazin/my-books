@@ -4,7 +4,7 @@ let AjaxLoader = React.createClass({
     render() {
         return (
             <div className="center-block">
-                <img className="center-block" src="/images/ajax-loader.gif"/>
+                <img className="center-block" src="/static/res/images/ajax-loader.gif"/>
             </div>
         );
     }

@@ -10,7 +10,7 @@ const onedriveClientId = "000000004816D42C";
 
 let Login = React.createClass({
     render () {
-        const redirectURI = "http://localhost:3000/redirect.html";
+        const redirectURI = "http://localhost:3000/redirect";
         return (<OneDriveLoginButton clientId={onedriveClientId}
                                      scope="wl.signin onedrive.readonly"
                                      redirectURI={redirectURI}/>);

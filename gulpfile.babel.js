@@ -34,7 +34,7 @@ let webpackConfig = {
     },
 
     plugins: [new BowerWebpack(), new BrowserSync({
-        server: {baseDir: [__dirname]}
+        proxy: "http://localhost:8000"
     })]
 };
 
