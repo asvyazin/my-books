@@ -2,11 +2,7 @@ import React from "react";
 
 let AjaxLoader = React.createClass({
     render() {
-        return (
-            <div className="center-block">
-                <img className="center-block" src="/static/res/images/ajax-loader.gif"/>
-            </div>
-        );
+        return <img className="center-block" src="/static/res/images/ajax-loader.gif"/>;
     }
 });
 

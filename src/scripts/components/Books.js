@@ -4,6 +4,7 @@ import _ from "underscore";
 import React from "react";
 import AjaxLoader from "./ajaxLoader";
 import App from "./App";
+import { Panel, ListGroup, ListGroupItem, Glyphicon } from "react-bootstrap";
 
 function callOneDrive(accessToken, url, params) {
     const baseurl = "https://api.onedrive.com/v1.0";
@@ -15,17 +16,12 @@ function callOneDrive(accessToken, url, params) {
 
 let FolderChildPanel = React.createClass({
     render() {
+        let url;
         if (this.props.folder) {
-            const encodedPath = encodeURIComponent(this.props.path);
-            const url = "/Books/" + encodedPath;
-            return (
-                <a className="list-group-item" href={url} >{this.props.children}</a>
-            );
-        } else {
-            return (
-                <div className="list-group-item">{this.props.children}</div>
-            );
+            url = "/Books/" + encodeURIComponent(this.props.path);
         }
+
+        return <ListGroupItem href={url}>{this.props.children}</ListGroupItem>;
     }
 });
 
@@ -33,15 +29,18 @@ let FolderChildItem = React.createClass({
     render() {
         var folder;
         var badge;
+        var icon;
         if (this.props.childrenCount) {
             badge = <span className="badge">{this.props.childrenCount}</span>;
             folder = true;
+            icon = <Glyphicon glyph="folder-close"/>;
+        } else {
+            icon = <Glyphicon glyph="file"/>;
         }
 
         return (
             <FolderChildPanel folder={folder} path={this.props.path}>
-                {this.props.name}
-                {badge}
+                {icon} {this.props.name} {badge}
             </FolderChildPanel>
         );
     }
@@ -73,7 +72,7 @@ let Folder = React.createClass({
             loadingIndicator = <AjaxLoader/>;
         } else {
             console.log("render");
-            folderName = <h3 className="panel-title">{this.state.folder.name}</h3>;
+            folderName = <span><Glyphicon glyph="folder-open"/> {this.state.folder.name}</span>;
             var childrenNodes = this.state.children.value.map(x => {
                 var childrenCount;
                 if (x.folder && x.folder.childCount) {
@@ -87,20 +86,11 @@ let Folder = React.createClass({
                 path = path + x.name;
                 return <FolderChildItem key={x.id} name={x.name} path={path} childrenCount={childrenCount}/>;
             });
-            folderChildren =
-                <div className="panel-body list-group">
-                    {childrenNodes}
-                </div>;
+            folderChildren = <ListGroup fill>{childrenNodes}</ListGroup>;
         }
 
-        return (
-            <div className="panel panel-default col-md-6">
-                <div className="panel-heading">
-                    {loadingIndicator} {folderName}
-                </div>
-                {folderChildren}
-            </div>
-        );
+        const header = <h3>{loadingIndicator} {folderName}</h3>;
+        return <Panel className="col-md-6" header={header}>{folderChildren}</Panel>;
     }
 });
 

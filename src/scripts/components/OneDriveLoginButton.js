@@ -1,5 +1,6 @@
 import $ from "jquery";
 import React from "react";
+import { Button, Glyphicon } from "react-bootstrap";
 
 let OneDriveLoginButton = React.createClass({
     render () {
@@ -11,12 +12,9 @@ let OneDriveLoginButton = React.createClass({
         });
         const loginURI = "https://login.live.com/oauth20_authorize.srf?" + params;
 
-        return (
-            <a className="btn btn-default btn-lg col-md-offset-5 col-md-2" role="button" href={loginURI}>
-                <span className="glyphicon glyphicon-cloud"></span>
-                Login to OneDrive
-            </a>
-        );
+        return <Button href={loginURI} bsSize="large" className="col-md-offset-5 col-md-2">
+            <Glyphicon glyph="cloud"/> Go to OneDrive
+        </Button>;
     }
 });
 
