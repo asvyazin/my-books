@@ -90,7 +90,7 @@ let Folder = React.createClass({
         }
 
         const header = <h3>{loadingIndicator} {folderName}</h3>;
-        return <Panel className="col-md-6" header={header}>{folderChildren}</Panel>;
+        return <Panel header={header}>{folderChildren}</Panel>;
     }
 });
 
