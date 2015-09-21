@@ -12,6 +12,7 @@
     "bower-webpack-plugin": "^0.1.8",
     "browser-sync": "^2.9.3",
     "browser-sync-webpack-plugin": "^1.0.0",
+    "gulp": "^3.9.0",
     "gulp-babel": "^5.2.1",
     "path": "^0.12.7",
     "rimraf": "^2.4.3",
