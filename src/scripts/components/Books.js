@@ -89,7 +89,7 @@ let Folder = React.createClass({
             folderChildren = <ListGroup fill>{childrenNodes}</ListGroup>;
         }
 
-        const header = <h3>{loadingIndicator} {folderName}</h3>;
+        const header = <h3 className="text-center">{loadingIndicator} {folderName}</h3>;
         return <Panel header={header}>{folderChildren}</Panel>;
     }
 });

@@ -11,6 +11,12 @@ import Web.Cookie
 import Yesod
 import Yesod.EmbeddedStatic
 
+#ifdef DEBUG
+#define DEVELOPMENT True
+#else
+#define DEVELOPMENT False
+#endif
+
 mkEmbeddedStatic True "eStatic"
   [ embedDirAt "bootstrap" "../bower_components/bootstrap/dist"
   , embedDirAt "jquery" "../bower_components/jquery/dist"
