@@ -71,7 +71,6 @@ let Folder = React.createClass({
         if (!this.state.loaded) {
             loadingIndicator = <AjaxLoader/>;
         } else {
-            console.log("render");
             folderName = <span><Glyphicon glyph="folder-open"/> {this.state.folder.name}</span>;
             var childrenNodes = this.state.children.value.map(x => {
                 var childrenCount;
@@ -102,7 +101,7 @@ let Books = React.createClass({
             path = decodeURIComponent(this.props.encodedPath);
         }
 
-        return <App><Folder path={path} accessToken={accessToken}/></App>;
+        return <App accessToken={accessToken}><Folder path={path} accessToken={accessToken}/></App>;
     }
 });
 

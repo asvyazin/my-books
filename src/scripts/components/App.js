@@ -7,7 +7,7 @@ let App = React.createClass({
 
         return (
             <div>
-                <Header title={appTitle}/>
+                <Header title={appTitle} accessToken={this.props.accessToken}/>
                 {this.props.children}
             </div>
         );

@@ -17,7 +17,7 @@ import Yesod.EmbeddedStatic
 #define DEVELOPMENT False
 #endif
 
-mkEmbeddedStatic True "eStatic"
+mkEmbeddedStatic DEVELOPMENT "eStatic"
   [ embedDirAt "bootstrap" "../bower_components/bootstrap/dist"
   , embedDirAt "jquery" "../bower_components/jquery/dist"
   , embedFileAt "js/jengine/cookie.js" "../bower_components/jengine-cookie/cookie.js"
