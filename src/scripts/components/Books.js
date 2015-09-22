@@ -2,9 +2,10 @@ import $ from "jquery";
 import "jquery.cookie";
 import _ from "underscore";
 import React from "react";
+import { Panel, ListGroup, ListGroupItem, Glyphicon } from "react-bootstrap";
+import { Navigation } from "react-router";
 import AjaxLoader from "./AjaxLoader";
 import App from "./App";
-import { Panel, ListGroup, ListGroupItem, Glyphicon } from "react-bootstrap";
 
 function callOneDrive(accessToken, url, params) {
     const baseurl = "https://api.onedrive.com/v1.0";
@@ -15,10 +16,12 @@ function callOneDrive(accessToken, url, params) {
 }
 
 let FolderChildPanel = React.createClass({
+    mixins: [Navigation],
+
     render() {
         let url;
         if (this.props.folder) {
-            url = "/Books/" + encodeURIComponent(this.props.path);
+            url = this.makeHref("books", {encodedPath: encodeURIComponent(this.props.path)});
         }
 
         return <ListGroupItem href={url}>{this.props.children}</ListGroupItem>;
@@ -38,11 +41,9 @@ let FolderChildItem = React.createClass({
             icon = <Glyphicon glyph="file"/>;
         }
 
-        return (
-            <FolderChildPanel folder={folder} path={this.props.path}>
-                {icon} {this.props.name} {badge}
-            </FolderChildPanel>
-        );
+        return <FolderChildPanel folder={folder} path={this.props.path}>
+            {icon} {this.props.name} {badge}
+        </FolderChildPanel>;
     }
 });
 
@@ -97,11 +98,11 @@ let Books = React.createClass({
     render() {
         var accessToken = $.cookie("onedrive-access-token");
         var path = "/";
-        if (this.props.encodedPath) {
-            path = decodeURIComponent(this.props.encodedPath);
+        if (this.props.params.encodedPath) {
+            path = decodeURIComponent(this.props.params.encodedPath);
         }
 
-        return <App accessToken={accessToken}><Folder path={path} accessToken={accessToken}/></App>;
+        return <Folder key={path} path={path} accessToken={accessToken}/>;
     }
 });
 

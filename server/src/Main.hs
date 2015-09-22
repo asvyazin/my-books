@@ -28,8 +28,6 @@ data MyBooks = MyBooks { getStatic :: EmbeddedStatic }
 
 mkYesod "MyBooks" [parseRoutes|
 / HomeR GET
-/Login LoginR GET
-/Books/#Text BooksR GET
 /redirect RedirectR GET
 /static StaticR EmbeddedStatic getStatic
 |]
@@ -38,7 +36,6 @@ instance Yesod MyBooks where
   addStaticContent = embedStaticContent getStatic StaticR Right
   defaultLayout contents = do
     PageContent title headTags bodyTags <- widgetToPageContent $ do
-      addScript $ StaticR js_bundle_js
       addStylesheet $ StaticR bootstrap_css_bootstrap_css
       contents
     withUrlRenderer [hamlet|
@@ -52,32 +49,16 @@ instance Yesod MyBooks where
                 <!--[if lt IE 10]>
                 <p .browserupgrade>You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.
                 <![endif]-->
-                <div .container>
                 ^{bodyTags}
       |]
 
-getHomeR :: Handler ()
-getHomeR = do
-  onedriveAccessToken <- lookupCookie "onedrive-access-token"
-  maybe (redirect LoginR) (\_ -> redirect (BooksR "/")) onedriveAccessToken
-
-getLoginR :: Handler Html
-getLoginR = defaultLayout $ do
-  addScript $ StaticR jquery_jquery_js
-  toWidget [julius|
-    $(function () {
-         renderComponent(React.createElement(Login, null));
-    });
-|]
-
-getBooksR :: Text -> Handler Html
-getBooksR encodedPath = defaultLayout $ do
-  addScript $ StaticR jquery_jquery_js
-  toWidget [julius|
-    $(function () {
-         renderComponent(React.createElement(Books, {encodedPath: "#{rawJS encodedPath}"}));
-    });
-|]
+getHomeR :: Handler Html
+getHomeR = defaultLayout $ do
+  addScript $ StaticR js_bundle_js
+  [whamlet|
+      <div .container>
+          <div .application>
+  |]
 
 getRedirectR :: Handler Html
 getRedirectR = defaultLayout $ do

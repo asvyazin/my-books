@@ -1,16 +1,23 @@
+import $ from "jquery";
+import "jquery.cookie";
 import React from "react";
+import { RouteHandler } from "react-router";
 import Header from "./Header";
 
 let App = React.createClass({
+    getInitialState() {
+        return {
+            accessToken: $.cookie("onedrive-access-token")
+        };
+    },
+
     render () {
         const appTitle = "MyBooks";
 
-        return (
-            <div>
-                <Header title={appTitle} accessToken={this.props.accessToken}/>
-                {this.props.children}
-            </div>
-        );
+        return <div>
+            <Header title={appTitle} accessToken={this.state.accessToken}/>
+            <RouteHandler/>
+        </div>;
     }
 });
 
