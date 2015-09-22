@@ -1,8 +1,8 @@
 import $ from "jquery";
-import $cookie from "jengine-cookie";
+import "jquery.cookie";
 import _ from "underscore";
 import React from "react";
-import AjaxLoader from "./ajaxLoader";
+import AjaxLoader from "./AjaxLoader";
 import App from "./App";
 import { Panel, ListGroup, ListGroupItem, Glyphicon } from "react-bootstrap";
 
@@ -95,7 +95,7 @@ let Folder = React.createClass({
 
 let Books = React.createClass({
     render() {
-        var accessToken = $cookie.get("onedrive-access-token");
+        var accessToken = $.cookie("onedrive-access-token");
         var path = "/";
         if (this.props.encodedPath) {
             path = decodeURIComponent(this.props.encodedPath);

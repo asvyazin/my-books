@@ -2,7 +2,6 @@ import gulp from "gulp";
 import rimraf from "rimraf";
 import webpack from "webpack";
 import path from "path";
-import BowerWebpack from "bower-webpack-plugin";
 import BrowserSync from "browser-sync-webpack-plugin";
 
 let config = {
@@ -25,7 +24,7 @@ let webpackConfig = {
     module: {
         loaders: [{
             test: /\.jsx?$/,
-            exclude: /(node_modules|bower_components)/,
+            exclude: /(node_modules)/,
             loader: "babel",
             query: {
                 optional: ["runtime"]
@@ -33,7 +32,7 @@ let webpackConfig = {
         }]
     },
 
-    plugins: [new BowerWebpack(), new BrowserSync({
+    plugins: [new BrowserSync({
         proxy: "http://localhost:8000"
     })]
 };

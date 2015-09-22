@@ -18,9 +18,9 @@ import Yesod.EmbeddedStatic
 #endif
 
 mkEmbeddedStatic DEVELOPMENT "eStatic"
-  [ embedDirAt "bootstrap" "../bower_components/bootstrap/dist"
-  , embedDirAt "jquery" "../bower_components/jquery/dist"
-  , embedFileAt "js/jengine/cookie.js" "../bower_components/jengine-cookie/cookie.js"
+  [ embedDirAt "bootstrap" "../node_modules/bootstrap/dist"
+  , embedDirAt "jquery" "../node_modules/jquery/dist"
+  , embedFileAt "jquery.cookie/jquery.cookie.js" "../node_modules/jquery.cookie/jquery.cookie.js"
   , embedDirAt "images" "../images"
   , embedFileAt "js/bundle.js" "../dist/bundle.js" ]
 
@@ -82,7 +82,7 @@ getBooksR encodedPath = defaultLayout $ do
 getRedirectR :: Handler Html
 getRedirectR = defaultLayout $ do
   addScript (StaticR jquery_jquery_js)
-  addScript (StaticR js_jengine_cookie_js)
+  addScript (StaticR jquery_cookie_jquery_cookie_js)
   toWidget [julius|
     function parseQuery(str) {
         var result = {};
@@ -96,7 +96,7 @@ getRedirectR = defaultLayout $ do
 
     $(function () {
         var query = parseQuery(window.location.hash.substring(1));
-        $cookie.set("onedrive-access-token", query.access_token);
+        $.cookie("onedrive-access-token", query.access_token);
         window.location = "@{HomeR}";
     });
   |]
