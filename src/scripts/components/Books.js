@@ -80,14 +80,20 @@ let Folder = React.createClass({
     },
 
     async componentDidMount() {
-        let folder = await this.getFolder(this.props.accessToken, this.props.path);
-        let children = await this.getChildren(this.props.accessToken, this.props.path);
+        try {
+            let folder = await this.getFolder(this.props.accessToken, this.props.path);
+            let children = await this.getChildren(this.props.accessToken, this.props.path);
 
-        if (this.isMounted()) {
+            if (this.isMounted()) {
+                this.setState({
+                    folder: folder,
+                    children: children,
+                    loaded: true
+                });
+            }
+        } catch (e) {
             this.setState({
-                folder: folder,
-                children: children,
-                loaded: true
+                error: e.responseJSON.error.message
             });
         }
     },
@@ -96,7 +102,10 @@ let Folder = React.createClass({
         var folderName;
         var folderChildren;
         var loadingIndicator;
-        if (!this.state.loaded) {
+        var error;
+        if (this.state.error) {
+            error = <span className="text-danger">{this.state.error}</span>;
+        } else if (!this.state.loaded) {
             loadingIndicator = <AjaxLoader/>;
         } else {
             folderName = <span><Glyphicon glyph="folder-open"/> {this.state.folder.name}</span>;
@@ -116,7 +125,7 @@ let Folder = React.createClass({
             folderChildren = <ListGroup fill>{childrenNodes}</ListGroup>;
         }
 
-        const header = <h3 className="text-center">{loadingIndicator} {folderName}</h3>;
+        const header = <h3 className="text-center">{error} {loadingIndicator} {folderName}</h3>;
         return <Panel header={header}>{folderChildren}</Panel>;
     }
 });
