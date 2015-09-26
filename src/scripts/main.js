@@ -8,7 +8,7 @@ import Router, { Route, DefaultRoute, HashLocation } from "react-router";
 const routes = <Route path="/" handler={App}>
     <DefaultRoute handler={Books}/>
     <Route name="login" path="login" handler={Login}/>
-    <Route name="books" path="books/:encodedPath" handler={Books}/>
+    <Route name="books" path="books" handler={Books}/>
 </Route>;
 
 Router.run(routes, HashLocation, (Handler) => {

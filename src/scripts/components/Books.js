@@ -2,22 +2,54 @@ import $ from "jquery"
 import "jquery.cookie"
 import _ from "underscore"
 import React from "react"
-import { Panel, ListGroup, ListGroupItem, Glyphicon } from "react-bootstrap"
-import { Navigation } from "react-router"
+import { Panel, ListGroup, ListGroupItem, Glyphicon, Modal, Button } from "react-bootstrap"
 import AjaxLoader from "./AjaxLoader"
 import App from "./App"
 import OneDriveApi from "./OneDriveApi"
+import OneDriveDirectoryTree from "./OneDriveDirectoryTree.js"
 
-let FolderChildPanel = React.createClass({
-    mixins: [Navigation],
+let ChooseBooksDirectory = React.createClass({
+    getInitialState() {
+        return {
+            showModal: false
+        };
+    },
 
-    render() {
-        let url;
-        if (this.props.folder) {
-            url = this.makeHref("books", {encodedPath: encodeURIComponent(this.props.path)});
-        }
+    handleClick() {
+        this.setState({
+            showModal: true
+        });
+    },
 
-        return <ListGroupItem href={url}>{this.props.children}</ListGroupItem>;
+    handleClose() {
+        this.setState({
+            showModal: false
+        });
+    },
+
+    onChooseItem(path) {
+        this.props.onChooseDirectory(path);
+        this.setState({
+            showModal: false
+        });
+    },
+
+    render(){
+        return <div>
+            <Modal show={this.state.showModal} onHide={this.handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Choose directory</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <OneDriveDirectoryTree key="/" path="/" name="/" accessToken={this.props.accessToken}
+                                           onChooseItem={this.onChooseItem}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={this.handleClose}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+            <a href="javascript:;" onClick={this.handleClick}>Choose directory</a>
+        </div>;
     }
 });
 
@@ -34,9 +66,9 @@ let FolderChildItem = React.createClass({
             icon = <Glyphicon glyph="file"/>;
         }
 
-        return <FolderChildPanel folder={folder} path={this.props.path}>
+        return <ListGroupItem folder={folder} path={this.props.path}>
             {icon} {this.props.name} {badge}
-        </FolderChildPanel>;
+        </ListGroupItem>;
     }
 });
 
@@ -90,14 +122,27 @@ let Folder = React.createClass({
 });
 
 let Books = React.createClass({
+    getInitialState() {
+        return {
+            booksPath: $.cookie("mybooks-books-path")
+        };
+    },
+
+    onChooseDirectory(path) {
+        $.cookie("mybooks-books-path", path);
+        this.setState({
+            booksPath: path
+        });
+    },
+
     render() {
         var accessToken = $.cookie("onedrive-access-token");
-        var path = "/";
-        if (this.props.params.encodedPath) {
-            path = decodeURIComponent(this.props.params.encodedPath);
-        }
 
-        return <Folder key={path} path={path} accessToken={accessToken}/>;
+        if (this.state.booksPath) {
+            return <Folder key={this.state.booksPath} path={this.state.booksPath} accessToken={accessToken}/>;
+        } else {
+            return <ChooseBooksDirectory accessToken={accessToken} onChooseDirectory={this.onChooseDirectory}/>;
+        }
     }
 });
 

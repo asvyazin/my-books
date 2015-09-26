@@ -1,8 +1,10 @@
 import React from "react"
 import TreeView from "react-treeview"
+import { Glyphicon } from "react-bootstrap"
 import _ from "underscore"
 import AjaxLoader from "./AjaxLoader"
 import OneDriveApi from "./OneDriveApi.js"
+import $ from "jquery"
 
 let OneDriveDirectoryTree = React.createClass({
     mixins: [OneDriveApi],
@@ -62,13 +64,22 @@ let OneDriveDirectoryTree = React.createClass({
                 children = _.map(this.state.children, child => <OneDriveDirectoryTree
                     key={child.path}
                     path={child.path}
-                    name={child.name}
+                    name={<span onClick={() => this.props.onChooseItem(child.path)}>{child.name}</span>}
+                    onChooseItem={this.props.onChooseItem}
                     accessToken={this.props.accessToken}/>);
             }
         }
 
+        let glyph;
+        if (this.state.collapsed) {
+            glyph = "folder-close";
+        } else {
+            glyph = "folder-open";
+        }
+
+        let nodeLabel = <span><Glyphicon glyph={glyph}/> {this.props.name}</span>;
         return <TreeView
-            nodeLabel={this.props.name}
+            nodeLabel={nodeLabel}
             collapsed={this.state.collapsed}
             onClick={this.handleClick}>{children}</TreeView>;
     }
