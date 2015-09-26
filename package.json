@@ -5,8 +5,10 @@
     "bootstrap": "^3.3.5",
     "jquery": "^2.1.4",
     "jquery.cookie": "^1.4.1",
+    "pouchdb": "^4.0.3",
     "react": "^0.13.3",
     "react-bootstrap": "^0.25.2",
+    "react-treeview": "^0.4.2",
     "react-router": "^0.13.3",
     "underscore": "^1.8.3"
   },

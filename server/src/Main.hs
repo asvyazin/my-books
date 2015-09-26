@@ -21,6 +21,7 @@ mkEmbeddedStatic DEVELOPMENT "eStatic"
   [ embedDirAt "bootstrap" "../node_modules/bootstrap/dist"
   , embedDirAt "jquery" "../node_modules/jquery/dist"
   , embedFileAt "jquery.cookie/jquery.cookie.js" "../node_modules/jquery.cookie/jquery.cookie.js"
+  , embedFileAt "css/react-treeview.css" "../node_modules/react-treeview/react-treeview.css"
   , embedDirAt "images" "../images"
   , embedFileAt "js/bundle.js" "../dist/bundle.js" ]
 
@@ -37,6 +38,7 @@ instance Yesod MyBooks where
   defaultLayout contents = do
     PageContent title headTags bodyTags <- widgetToPageContent $ do
       addStylesheet $ StaticR bootstrap_css_bootstrap_css
+      addStylesheet $ StaticR css_react_treeview_css
       contents
     withUrlRenderer [hamlet|
         $doctype 5

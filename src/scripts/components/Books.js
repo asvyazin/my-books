@@ -1,19 +1,12 @@
-import $ from "jquery";
-import "jquery.cookie";
-import _ from "underscore";
-import React from "react";
-import { Panel, ListGroup, ListGroupItem, Glyphicon } from "react-bootstrap";
-import { Navigation } from "react-router";
-import AjaxLoader from "./AjaxLoader";
-import App from "./App";
-
-function callOneDrive(accessToken, url, params) {
-    const baseurl = "https://api.onedrive.com/v1.0";
-    return $.ajax({
-        url: baseurl + url,
-        data: _.extend({access_token: accessToken}, params)
-    });
-}
+import $ from "jquery"
+import "jquery.cookie"
+import _ from "underscore"
+import React from "react"
+import { Panel, ListGroup, ListGroupItem, Glyphicon } from "react-bootstrap"
+import { Navigation } from "react-router"
+import AjaxLoader from "./AjaxLoader"
+import App from "./App"
+import OneDriveApi from "./OneDriveApi"
 
 let FolderChildPanel = React.createClass({
     mixins: [Navigation],
@@ -48,13 +41,15 @@ let FolderChildItem = React.createClass({
 });
 
 let Folder = React.createClass({
+    mixins: [OneDriveApi],
+
     getInitialState() {
         return {};
     },
 
     async componentDidMount() {
-        let folder = await callOneDrive(this.props.accessToken, "/drive/root:" + this.props.path);
-        let children = await callOneDrive(this.props.accessToken, "/drive/root:" + this.props.path + ":/children");
+        let folder = await this.getFolder(this.props.accessToken, this.props.path);
+        let children = await this.getChildren(this.props.accessToken, this.props.path);
 
         if (this.isMounted()) {
             this.setState({

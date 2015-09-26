@@ -1,8 +1,11 @@
 import React from "react";
 import { Navbar, NavItem, Nav } from "react-bootstrap";
+import { Navigation } from "react-router";
 import UserLink from "./UserLink";
 
 let Header = React.createClass({
+    mixins: [Navigation],
+
     render: function () {
         let user;
         if (this.props.accessToken) {
@@ -11,7 +14,7 @@ let Header = React.createClass({
 
         return <Navbar brand={this.props.title} fluid>
             <Nav navbar>
-                <NavItem href="/Login">Get new access token</NavItem>
+                <NavItem href={this.makeHref("login")}>Get new access token</NavItem>
             </Nav>
             <Nav navbar right>{user}</Nav>
         </Navbar>;
